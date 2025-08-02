@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Resultat</h1>
+  <p>Du har avslutat förhöret.</p>
+  <p>Dina poäng: <strong>{{ score }} / {{ total }}</strong></p>
+  <p><a href="{{ url_for('quiz_start', set_id=set_id) }}">Starta om förhör</a> eller <a href="{{ url_for('index') }}">Tillbaka till startsidan</a>.</p>
+{% endblock %}

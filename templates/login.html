@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Välj användare</h1>
+  <form method="post">
+    <label>Välj befintlig användare:</label><br>
+    {% for user in users %}
+      <label>
+        <input type="radio" name="username" value="{{ user.username }}"> {{ user.username }}
+      </label><br>
+    {% endfor %}
+    <p>Eller skapa ny:</p>
+    <input type="text" name="username" placeholder="Nytt användarnamn">
+    <br>
+    <input type="submit" value="Logga in">
+  </form>
+{% endblock %}

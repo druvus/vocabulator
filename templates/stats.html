@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Statistik för {{ set_name }}</h1>
+  <p>
+    Period:
+    <a href="{{ url_for('stats', set_id=set_id) }}" {% if not interval %}style="font-weight:bold"{% endif %}>Totalt</a> |
+    <a href="{{ url_for('stats', set_id=set_id, interval='7') }}" {% if interval == '7' %}style="font-weight:bold"{% endif %}>Senaste veckan</a> |
+    <a href="{{ url_for('stats', set_id=set_id, interval='30') }}" {% if interval == '30' %}style="font-weight:bold"{% endif %}>Senaste månaden</a>
+  </p>
+  <p>
+    Användare:
+    <a href="{{ url_for('stats', set_id=set_id, interval=interval) }}" {% if not request.args.get('user') %}style="font-weight:bold"{% endif %}>Min statistik</a> |
+    <a href="{{ url_for('stats', set_id=set_id, interval=interval, user='all') }}" {% if request.args.get('user') == 'all' %}style="font-weight:bold"{% endif %}>Alla användare</a>
+  </p>
+  <p>
+    Tillfällen: {{ stats.total_sessions }}<br>
+    Genomsnittligt antal rätt: {{ stats.avg_correct|round(2) }}<br>
+    Genomsnittlig träffsäkerhet: {{ (stats.avg_ratio * 100)|round(1) }}%
+  </p>
+  {% if problem_words %}
+    <h2>Problematiska ord</h2>
+    <table>
+      <thead>
+        <tr><th>Språk</th><th>Ord</th></tr>
+      </thead>
+      <tbody>
+        {% for words in problem_words %}
+          <tr><td colspan="2"><strong>—</strong></td></tr>
+          {% for lang, word in words.items() %}
+            <tr>
+              <td>{{ lang }}</td>
+              <td>{{ word }}</td>
+            </tr>
+          {% endfor %}
+        {% endfor %}
+      </tbody>
+    </table>
+    <p>Markera "Öva endast problematiska ord" när du startar ett nytt förhör för att fokusera på dessa.</p>
+  {% else %}
+    <p>Inga problematiska ord för valt intervall.</p>
+  {% endif %}
+{% endblock %}

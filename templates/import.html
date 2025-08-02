@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Importera glosor</h1>
+  <form method="post">
+    <label for="set_name">Namn på läxa:</label>
+    <input type="text" id="set_name" name="set_name" placeholder="Till exempel 'Vecka 1'" required>
+
+    <label for="languages_order">Språkordning (kommaseparerad):</label>
+    <input type="text" id="languages_order" name="languages_order" placeholder="t.ex. Engelska,Svenska" />
+    <small>Om tomt antas den första kolumnen vara främmande språk och den andra svenska.</small>
+
+    <label for="tags">Taggar (kommaseparerade):</label>
+    <input type="text" id="tags" name="tags" placeholder="t.ex. verb, mat, vecka1" />
+
+    <label>
+      <input type="checkbox" name="auto_spanish" />
+      Lägg till spansk översättning automatiskt
+    </label>
+
+    <label for="vocab_text">Klistra in gloslista här:</label>
+    <textarea id="vocab_text" name="vocab_text" placeholder="perro	dog	hund"></textarea>
+
+    <label for="file">Eller välj en fil (CSV eller Excel):</label>
+    <input type="file" id="file" name="file">
+    <small>Om du laddar upp fil behöver du inte klistra in text.</small>
+
+    <input type="submit" value="Importera">
+  </form>
+{% endblock %}

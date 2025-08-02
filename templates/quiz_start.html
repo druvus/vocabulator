@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Starta läxförhör</h1>
+  <form method="post">
+    <p>Välj två språk att öva mellan (valfritt). Om du väljer fler än två används endast de första två.</p>
+    <div>
+      {% for lang in languages %}
+        <label>
+          <input type="checkbox" name="languages" value="{{ lang.name }}"> {{ lang.name }}
+        </label><br>
+      {% endfor %}
+    </div>
+    <label>
+      <input type="checkbox" name="random_direction" checked>
+      Blanda riktning (t.ex. både Svenska→Engelska och Engelska→Svenska)
+    </label>
+    <label>
+      <input type="checkbox" name="problem_only">
+      Öva endast problematiska ord (baserat på tidigare resultat)
+    </label>
+    <label>
+      <input type="checkbox" name="spaced_repetition">
+      Använd spaced repetition (schemalagda ord)
+    </label>
+    <label for="mode">Quizläge:</label>
+    <select name="mode" id="mode">
+      <option value="typed">Skriv svaret</option>
+      <option value="choice">Flervalsfrågor</option>
+      <option value="flashcard">Flashkort</option>
+    </select>
+    <div>
+      <input type="submit" value="Starta förhör">
+    </div>
+  </form>
+{% endblock %}
