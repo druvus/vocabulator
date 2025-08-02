@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Lägg till glosor till {{ set_name }}</h1>
+  <form method="post">
+    <label for="languages_order">Språkordning (kommaseparerad):</label>
+    <input type="text" id="languages_order" name="languages_order" placeholder="t.ex. Engelska,Svenska" />
+    <small>Om tomt antas den första kolumnen vara främmande språk och den andra svenska.</small>
+
+    <label>
+      <input type="checkbox" name="auto_spanish" />
+      Lägg till spansk översättning automatiskt
+    </label>
+
+    <label for="vocab_text">Klistra in glosor här:</label>
+    <textarea id="vocab_text" name="vocab_text" placeholder="perro	dog	hund"></textarea>
+
+    <input type="submit" value="Lägg till">
+  </form>
+  <p><a href="{{ url_for('index') }}">Tillbaka till startsidan</a></p>
+{% endblock %}

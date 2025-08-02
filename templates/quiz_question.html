@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Läxförhör</h1>
+  {% if feedback is not none %}
+    {% if mode == 'flashcard' %}
+      {% if feedback %}
+        <div class="flash success">Bra! Du markerade att du visste ordet.</div>
+      {% else %}
+        <div class="flash error">Du markerade att du inte visste ordet.</div>
+      {% endif %}
+    {% else %}
+      {% if feedback %}
+        <div class="flash success">Rätt! <strong>{{ question.src_word }}</strong> → {{ question.tgt_word }}</div>
+      {% else %}
+        <div class="flash error">Fel. Du svarade '{{ previous_answer }}'. Rätt svar var <strong>{{ question.tgt_word }}</strong>.</div>
+      {% endif %}
+    {% endif %}
+  {% endif %}
+  <p>Översätt följande ord:</p>
+  <h2>{{ question.src_word }}</h2>
+  <p><em>{{ question.src_lang }} → {{ question.tgt_lang }}</em></p>
+  {% if mode == 'typed' %}
+    <form method="post">
+      <input type="text" name="answer" autocomplete="off" autofocus>
+      <input type="submit" value="Skicka">
+    </form>
+  {% elif mode == 'choice' %}
+    <form method="post">
+      {% for opt in question.choices %}
+        <label>
+          <input type="radio" name="choice" value="{{ opt }}" required> {{ opt }}
+        </label><br>
+      {% endfor %}
+      <input type="submit" value="Skicka">
+    </form>
+  {% elif mode == 'flashcard' %}
+    <p>Facit: <strong>{{ question.tgt_word }}</strong></p>
+    <form method="post">
+      <button type="submit" name="knew" value="yes">Visste</button>
+      <button type="submit" name="knew" value="no">Visste ej</button>
+    </form>
+  {% endif %}
+  <p>
+    <a href="{{ url_for('quiz_start', set_id=set_id) }}">Avsluta förhör</a>
+  </p>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Glosprogram</h1>
+  <p>Här kan du importera och öva på glosor mellan olika språk.</p>
+  {% if sets %}
+    <h2>Aktuella läxor</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Namn</th>
+          <th>Beskrivning</th>
+          <th>Importdatum</th>
+          <th>Öva</th>
+          <th>Statistik</th>
+          <th>Exportera</th>
+          <th>Lägg till</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in sets %}
+          <tr>
+            <td>{{ s.name }}</td>
+            <td>{{ s.description or "" }}</td>
+            <td>{{ s.import_date }}</td>
+            <td><a href="{{ url_for('quiz_start', set_id=s.id) }}">Starta</a></td>
+            <td><a href="{{ url_for('stats', set_id=s.id) }}">Statistik</a></td>
+            <td><a href="{{ url_for('export_set', set_id=s.id) }}">Export</a></td>
+            <td><a href="{{ url_for('add_words', set_id=s.id) }}">Lägg till</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>Inga läxor har importerats ännu. <a href="{{ url_for('import_view') }}">Importera en ny läxa</a>.</p>
+  {% endif %}
+{% endblock %}
