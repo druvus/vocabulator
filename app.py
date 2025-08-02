@@ -266,6 +266,9 @@ def create_app(db_path: str = "glosprogram.db") -> Flask:
             return redirect(url_for("quiz_start", set_id=set_id))
         current_q = session.get("current_question")
         if request.method == "POST":
+            # Store the current question for feedback before generating a new one
+            previous_question = current_q.copy() if current_q else None
+
             # Determine quiz mode
             mode = quiz_state.get("mode", "typed")
             # Evaluate the submitted answer based on mode
@@ -370,6 +373,7 @@ def create_app(db_path: str = "glosprogram.db") -> Flask:
                 question=session["current_question"],
                 feedback=correct,
                 previous_answer=user_input,
+                previous_question=previous_question,  # Pass the previous question data
                 mode=quiz_state.get("mode"),
             )
         else:
@@ -383,6 +387,7 @@ def create_app(db_path: str = "glosprogram.db") -> Flask:
                 question=current_q,
                 feedback=None,
                 previous_answer=None,
+                previous_question=None,
                 mode=quiz_state.get("mode"),
             )
 
