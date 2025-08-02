@@ -2,7 +2,7 @@
 
 {% block content %}
   <h1>Läxförhör</h1>
-  {% if feedback is not none %}
+  {% if feedback is not none and previous_question %}
     {% if mode == 'flashcard' %}
       {% if feedback %}
         <div class="flash success">Bra! Du markerade att du visste ordet.</div>
@@ -11,9 +11,9 @@
       {% endif %}
     {% else %}
       {% if feedback %}
-        <div class="flash success">Rätt! <strong>{{ question.src_word }}</strong> → {{ question.tgt_word }}</div>
+        <div class="flash success">Rätt! <strong>{{ previous_question.src_word }}</strong> → {{ previous_question.tgt_word }}</div>
       {% else %}
-        <div class="flash error">Fel. Du svarade '{{ previous_answer }}'. Rätt svar var <strong>{{ question.tgt_word }}</strong>.</div>
+        <div class="flash error">Fel. Du svarade '{{ previous_answer }}'. Rätt svar var <strong>{{ previous_question.tgt_word }}</strong>.</div>
       {% endif %}
     {% endif %}
   {% endif %}

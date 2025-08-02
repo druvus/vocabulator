@@ -25,11 +25,18 @@ from typing import List, Optional, Dict, Tuple
 class Database:
     """Lightweight wrapper around SQLite with application specific helpers."""
 
+
+
     def __init__(self, db_path: str = "glosprogram.db") -> None:
         self.db_path = db_path
         # Connect with isolation_level=None to enable autocommit. This
         # simplifies transaction handling for a small application like this.
-        self.conn = sqlite3.connect(self.db_path, isolation_level=None)
+        # check_same_thread=False allows the connection to be used from multiple threads
+        self.conn = sqlite3.connect(
+            self.db_path,
+            isolation_level=None,
+            check_same_thread=False
+        )
         # Return rows as dictionaries for convenience.
         self.conn.row_factory = sqlite3.Row
         self._create_schema()
@@ -117,7 +124,18 @@ class Database:
             """
         )
 
+        # Users table for multi-user support
+        cur.execute(
+            """
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT UNIQUE NOT NULL
+            )
+            """
+        )
+
         # Quiz sessions: summarises each quiz attempt.
+        # Include user_id in the CREATE TABLE statement
         cur.execute(
             """
             CREATE TABLE IF NOT EXISTS quiz_sessions (
@@ -126,10 +144,13 @@ class Database:
                 session_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 total_questions INTEGER NOT NULL,
                 correct_answers INTEGER NOT NULL,
-                FOREIGN KEY (set_id) REFERENCES sets(id) ON DELETE CASCADE
+                user_id INTEGER,
+                FOREIGN KEY (set_id) REFERENCES sets(id) ON DELETE CASCADE,
+                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
             )
             """
         )
+
         # Quiz answers: detailed log of each answer in a session.
         cur.execute(
             """
@@ -146,29 +167,7 @@ class Database:
             """
         )
 
-        # Users table for multi-user support
-        cur.execute(
-            """
-            CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                username TEXT UNIQUE NOT NULL
-            )
-            """
-        )
-        # Ensure quiz_sessions has a user_id column; attempt to add if missing
-        try:
-            cur.execute("ALTER TABLE quiz_sessions ADD COLUMN user_id INTEGER")
-        except sqlite3.OperationalError:
-            # Column already exists
-            pass
-
         # Table to track spaced repetition progress for each user and group.
-        # Each record stores a box number (Leitner system) and a due_date
-        # indicating when the card should next be reviewed. When the user
-        # answers correctly, the box increases and the due_date is advanced
-        # exponentially. Incorrect answers reset the box and schedule the
-        # card for immediate review. See the Leitner system description for
-        # details on how cards move between boxes and how the intervals grow【457647381170†L156-L165】.
         cur.execute(
             """
             CREATE TABLE IF NOT EXISTS user_progress (
